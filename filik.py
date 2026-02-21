@@ -94,7 +94,6 @@ for d in try_dates_latest_first():
 
 print("Дата даних (yyyymmdd):", used_date, "| рядків:", len(df))
 
-# 2) Тягнемо показники
 assets = pick_metric(df, pattern_en=r"^Assets.*Total", leveli=1)
 if assets.empty:
     assets = pick_metric(df, pattern_ua=r"^Активи.*Усього", leveli=1)
@@ -119,7 +118,6 @@ if profit.empty:
 profit = profit.rename(columns={"value": "profit_value"})
 profit = agg_by_bank(profit, "profit_value", how="max")
 
-# 3) Merge без розмноження рядків
 banks = assets.merge(equity, on="fullname", how="inner").merge(cash, on="fullname", how="left")
 if not profit.empty:
     banks = banks.merge(profit, on="fullname", how="left")
@@ -218,4 +216,5 @@ for c in out_cols_excel:
         banks[c] = np.nan
 
 banks[out_cols_excel].to_excel("bank_rating.xlsx", index=False)
+
 print("\nЗбережено файл: bank_rating.xlsx")
